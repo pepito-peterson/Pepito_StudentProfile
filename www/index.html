@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Student Profile</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="app-container">
+    <header>
+        <img src="PetersonPepito.jpg" alt="Profile" class="profile-pic">
+        <div class="header-text">
+            <h1>Peterson Pepito</h1>
+            <h2>Student Profile</h2>
+        </div>
+    </header>
+
+    <main>
+        <section id="about-view" class="view active">
+            <h3>About Myself</h3>
+            <p> I am a 3rd Year BSIT student currently pursuing my studies at Xavier University - Ateneo de Cagayan.</p>
+            <p>I am not really into front-end development, but I am currently interested in learning the basics of networking and to delve deeper into back-end programming.</p>
+            <p> I have a habit of vibecoding.</p>
+        </section>
+
+        <section id="skills-view" class="view">
+            <h3>My Skills</h3>
+            <p>Here is a brief overview of my skills gained through academic learnings and experience in this course</p>
+            <ul class="skill-list">
+
+                <li>Git or GitHub</li>
+                <li>HTML</li>
+                <li>CSS</li>
+                <li>JS</li>
+                <li>MySQL</li>
+                <li>Java</li>
+
+            </ul>
+        </section>
+    </main>
+
+    <nav class="bottom-nav">
+        <button class="nav-btn active" data-target="about-view">About</button>
+        <button class="nav-btn" data-target="skills-view">Skills</button>
+    </nav>
+</div>
+
+        <script src="js/index.js"></script>
+    </body>
+</html>
