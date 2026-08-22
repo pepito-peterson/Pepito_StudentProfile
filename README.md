@@ -14,7 +14,5 @@
 
 Screenshots of my project launching my Student Profile App on an AVD:
 
-!\[Cordova App Screenshot](StudentProfileSS1.png)
-
-!\[Cordova App Screenshot](StudentProfileSS2.png)
-
+![Cordova App Screenshot](StudentProfileSS1.jpg) 
+![Cordova App Screenshot](StudentProfileSS2.png) 
