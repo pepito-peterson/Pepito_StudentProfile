@@ -2,51 +2,82 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Student Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Student Profile - Peterson C. Pepito</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<div class="app-container">
-    <header>
-        <img src="PetersonPepito.jpg" alt="Profile" class="profile-pic">
+<!--header-->
+<header>
+    <div class="header-container">
+        <img src="PetersonPepito.jpg" alt="Profile Picture of Peterson C. Pepito" class="profile-pic">
         <div class="header-text">
-            <h1>Peterson Pepito</h1>
-            <h2>Student Profile</h2>
+            <h1>Peterson C. Pepito</h1>
+            <h2>About Myself</h2>
         </div>
-    </header>
 
-    <main>
-        <section id="about-view" class="view active">
-            <h3>About Myself</h3>
-            <p> I am a 3rd Year BSIT student currently pursuing my studies at Xavier University - Ateneo de Cagayan.</p>
-            <p>I am not really into front-end development, but I am currently interested in learning the basics of networking and to delve deeper into back-end programming.</p>
-            <p> I have a habit of vibecoding.</p>
-        </section>
-
-        <section id="skills-view" class="view">
-            <h3>My Skills</h3>
-            <p>Here is a brief overview of my skills gained through academic learnings and experience in this course</p>
-            <ul class="skill-list">
-
-                <li>Git or GitHub</li>
-                <li>HTML</li>
-                <li>CSS</li>
-                <li>JS</li>
-                <li>MySQL</li>
-                <li>Java</li>
-
+        <!--navigation-->
+        <nav class="main-nav">
+            <ul>
+                <li><a href="#about">About</a></li>
+                <li><a href="#skills">Skills</a></li>
             </ul>
-        </section>
-    </main>
+        </nav>
+    </div>
+</header>
 
-    <nav class="bottom-nav">
-        <button class="nav-btn active" data-target="about-view">About</button>
-        <button class="nav-btn" data-target="skills-view">Skills</button>
-    </nav>
-</div>
+<main>
+    <!--about section-->
+    <section id="about">
+        <h3>About Me</h3>
+        <p>
+            Hello! I am Peterson Pepito, currently a BSIT - 3 student at Xavier University - Ateneo de Cagayan.
+        </p>
+        <p>
+           Aside from my academic coursework, I stay active as a student-athlete and working out with my friends Pao, Ivan, Jose, Kirby, and Prince.
+        </p>
+    </section>
 
-        <script src="js/index.js"></script>
-    </body>
+    <!--my skills-->
+    <section id="skills">
+        <h3>Skills</h3>
+        <div class="skills-grid">
+
+            <div class="skill-card">
+                <h4>Java</h4>
+                <p>Experience building desktop software using Swing UI components, event handling, and MVC architecture.</p>
+            </div>
+
+            <div class="skill-card">
+                <h4>Web Dev</h4>
+                <p>Made portfolios and other side projects using HTML and CSS.</p>
+            </div>
+
+            <div class="skill-card">
+                <h4>Database/Back-End</h4>
+                <p>MySQL schema normalization, entity-relationship modeling, and JDBC connectivity.</p>
+            </div>
+
+            <div class="skill-card">
+                <h4>Python & PyQt6</h4>
+                <p>Designed and customized desktop interfaces using Qt Designer.</p>
+            </div>
+
+            <div class="skill-card">
+                <h4>Git/GitHub</h4>
+                <p>Experienced a lot using Git/GitHub during web-dev classes last semester.</p>
+            </div>
+
+        </div>
+    </section>
+</main>
+
+<!--footer-->
+<footer>
+    <p>&copy; 2026 Peterson C. Pepito. All rights reserved.</p>
+</footer>
+
+<script src="js/index.js"></script>
+</body>
 </html>

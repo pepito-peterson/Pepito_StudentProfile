@@ -15,129 +15,269 @@
     KIND, either express or implied.  See the License for the
     specific language governing permissions and limitations
     under the License.
-*/
+    */
+
+:root {
+    --primary-color: #1a252f;
+    --secondary-color: #3498db;
+    --text-dark: #333333;
+    --text-light: #555555;
+    --bg-color: #f4f6f8;
+    --white: #ffffff;
+}
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
+/*body*/
 body {
-    background-color: #ffffff;
-    color: #111111;
-    overscroll-behavior-y: none;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    color: var(--text-dark);
+    background-color: var(--bg-color);
+    scroll-behavior: smooth;
 }
 
-/*for da app container layout*/
-.app-container {
-    display: flex;
-    flex-direction: column;
-    /*full viewport height*/
-    height: 100vh;
-}
-
-/*header chuy*/
+/*header*/
 header {
-    display: flex;
-    align-items: center;
-    padding: 2rem 1.5rem 1rem;
-    border-bottom: 1px solid #eeeeee;
+    background-color: var(--white);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 .profile-pic {
-    width: 60px;
-    height: 60px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     object-fit: cover;
-    margin-right: 1rem;
-    /*placeholder color*/
-    background-color: #f0f0f0;
+    margin-bottom: 1rem;
+    border: 3px solid var(--secondary-color);
 }
 
 header h1 {
-    font-size: 1.25rem;
-    font-weight: 600;
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    margin-bottom: 0.25rem;
 }
 
 header h2 {
-    font-size: 0.85rem;
-    font-weight: 400;
-    color: #666666;
-}
-
-/*for da main content area of my student profile*/
-main {
-/*takes up remaining space*/
-    flex: 1;
-    /*enables scrolling only in this area*/
-    overflow-y: auto;
-    padding: 2rem 1.5rem;
-}
-
-/*views for JS toggling*/
-.view {
-/*hidden by default*/
-    display: none;
-    animation: fadeIn 0.3s ease;
-}
-
-.view.active {
-/*shown when active class is added*/
-    display: block;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(5px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-h3 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    font-weight: 500;
-}
-
-p {
     font-size: 1rem;
-    line-height: 1.6;
-    color: #444444;
+    color: var(--text-light);
+    font-weight: 400;
     margin-bottom: 1.5rem;
 }
 
-.skill-list {
+
+.main-nav ul {
     list-style: none;
-}
-
-.skill-list li {
-    padding: 1rem 0;
-    border-bottom: 1px solid #f0f0f0;
-    font-size: 1rem;
-    color: #111111;
-}
-
-/*fixed bottom nav*/
-.bottom-nav {
     display: flex;
-    border-top: 1px solid #eeeeee;
-    background-color: #ffffff;
-/*for da modern bezel-less phones*/
-    padding-bottom: env(safe-area-inset-bottom);
+    justify-content: center;
+    gap: 1rem;
 }
 
-.nav-btn {
-    flex: 1;
-    background: none;
-    border: none;
-    padding: 1.25rem 0;
+.main-nav a {
+    display: inline-block;
+    text-decoration: none;
+    color: var(--primary-color);
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    background-color: #eef2f5;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    /*min width to make it easier for users 2 tap*/
+    min-width: 110px;
+}
+
+.main-nav a:hover,
+.main-nav a:focus {
+    background-color: var(--primary-color);
+    color: var(--white);
+}
+
+/*main*/
+main {
+    padding: 2rem 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/*sections*/
+section {
+    background: var(--white);
+    padding: 2rem 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    /* Offset for sticky header so title isn't hidden when scrolled */
+    scroll-margin-top: 240px;
+}
+
+section h3 {
+    font-size: 1.35rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--secondary-color);
+    padding-bottom: 0.5rem;
+    display: inline-block;
+}
+
+section p {
+    margin-bottom: 1rem;
+    color: var(--text-light);
+}
+
+/*skills grid (1 Column on mobile)*/
+.skills-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.skill-card {
+    padding: 1.25rem;
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    background-color: #fafbfc;
+}
+
+.skill-card h4 {
+    color: var(--primary-color);
+    margin-bottom: 0.25rem;
+}
+
+.skill-card p {
+    margin-bottom: 0;
+    font-size: 0.95rem;
+}
+
+footer {
+    text-align: center;
+    padding: 2rem 1.5rem;
+    background-color: var(--primary-color);
+    color: var(--white);
     font-size: 0.9rem;
-    font-weight: 500;
-    color: #888888;
-    cursor: pointer;
-    transition: color 0.2s ease;
 }
 
-.nav-btn.active {
-    color: #111111;
+/*landscape for mobile*/
+@media (orientation: landscape) and (max-height: 600px) {
+    /*adjusted the padding and arrange items horizontally*/
+    header {
+        padding: 0.5rem 1rem;
+    }
+
+    .header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    /* makes my profile pic smaller*/
+    .profile-pic {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 0;
+        margin-right: 1rem;
+        border-width: 2px;
+    }
+
+    /*align text to left*/
+    .header-text {
+        text-align: left;
+        flex-grow: 1;
+    }
+
+    header h1 {
+        font-size: 1.25rem;
+    }
+
+    header h2 {
+        font-size: 0.9rem;
+        margin-bottom: 0;
+    }
+
+    /*compact the nav buttons*/
+    .main-nav ul {
+        gap: 0.5rem;
+    }
+
+    .main-nav a {
+        padding: 0.5rem 1rem;
+        min-width: 80px;
+        font-size: 0.9rem;
+    }
+
+
+    section {
+        scroll-margin-top: 100px;
+        padding: 1.5rem;
+    }
+}
+
+/*tablet screen size for 768px and wider devices*/
+@media (min-width: 768px) {
+    header h1 {
+        font-size: 1.75rem;
+    }
+
+    section {
+        padding: 2.5rem;
+        scroll-margin-top: 230px;
+    }
+
+    /*skills display in 2 columns*/
+    .skills-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+}
+
+/*desktop layout for screens 1024px and etc*/
+@media (min-width: 1024px) {
+
+    /*header reorganizes to a horizontal bar*/
+    .header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+    }
+
+    .profile-pic {
+        margin-bottom: 0;
+        margin-right: 1.5rem;
+        width: 80px;
+        height: 80px;
+    }
+
+    .header-text {
+        text-align: left;
+        flex-grow: 1;
+    }
+
+    header h2 {
+        margin-bottom: 0;
+    }
+
+    .main-nav ul {
+        justify-content: flex-end;
+    }
+
+    section {
+        scroll-margin-top: 150px;
+    }
+
+    /*skills display in 3 columns to utilize wide screens*/
+    .skills-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
