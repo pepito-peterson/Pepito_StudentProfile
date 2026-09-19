@@ -183,6 +183,17 @@ section p {
     font-family: inherit;
 }
 
+.form-hint {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    margin-top: -0.25rem;
+}
+
+.input-error {
+    border-color: #e74c3c !important;
+    box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2);
+}
+
 .submit-btn {
     padding: 0.75rem 1.5rem;
     background-color: var(--secondary-color);
@@ -261,4 +272,8 @@ footer {
     header h2 { margin-bottom: 0; }
     .main-nav ul { justify-content: flex-end; gap: 1rem; }
     .card-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+    .hidden {
+    display: none !important;
 }

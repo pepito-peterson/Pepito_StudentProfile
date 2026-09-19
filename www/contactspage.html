@@ -26,18 +26,20 @@
         </nav>
     </div>
 </header>
-
 <main>
-    <section>
+
+    <section id="contact-display">
         <h3>Get In Touch with Me!</h3>
         <p>If you would like to connect regarding academic inquiries about me, project collabs, or networking in general, please feel free to reach out using the form below.</p>
 
         <ul style="list-style-type: none; margin: 1.5rem 0;">
-            <li><strong>School Email:</strong> 20190018209@my.xu.edu.ph</li>
-            <li><strong>Personal Email:</strong> ersonpeito53@gmail.com</li>
-            <li><strong>GitHub:</strong> <a href="https://github.com/pepito-peterson" style="color: var(--secondary-color); text-decoration: none;">github.com/pepito-peterson</a></li>
-            <li><strong>Location:</strong> El Salvador City, Misamis Oriental, 9017</li>
+            <li><strong>School Email:</strong> <span id="display-school-email">Loading...</span></li>
+            <li><strong>Personal Email:</strong> <span id="display-personal-email">Loading...</span></li>
+            <li><strong>GitHub:</strong> <a href="#" id="display-github-link" style="color: var(--secondary-color); text-decoration: none;"><span id="display-github">Loading...</span></a></li>
+            <li><strong>Location:</strong> <span id="display-location">Loading...</span></li>
         </ul>
+
+        <button id="edit-contact-btn" class="submit-btn">Edit Contact Info</button>
 
         <hr style="border: 0; height: 1px; background: #eaeaea; margin: 2rem 0;">
 
@@ -61,12 +63,46 @@
             <button type="submit" class="submit-btn">Submit Message</button>
         </form>
     </section>
+
+    <section id="contact-edit" class="hidden">
+        <h3>Edit Contact Info</h3>
+        <div id="contact-error-message" style="color: #e74c3c; font-weight: bold; margin-bottom: 1rem; display: none;"></div>
+
+        <form id="edit-contact-form" class="contact-form">
+            <div class="form-group">
+                <label for="edit-school-email">School Email</label>
+                <input type="email" id="edit-school-email" placeholder="e.g., 20190018209@my.xu.edu.ph">
+                <small class="form-hint">Must be a valid email address.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="edit-personal-email">Personal Email</label>
+                <input type="email" id="edit-personal-email" placeholder="e.g., ersonpeito53@gmail.com">
+                <small class="form-hint">Must be a valid email address.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="edit-github">GitHub Link</label>
+                <input type="text" id="edit-github" placeholder="e.g., github.com/pepito-peterson">
+            </div>
+
+            <div class="form-group">
+                <label for="edit-location">Location</label>
+                <input type="text" id="edit-location" placeholder="e.g., El Salvador City, Misamis Oriental, 9017">
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                <button type="button" id="save-contact-btn" class="submit-btn" style="flex: 1;">Save</button>
+                <button type="button" id="cancel-contact-btn" class="submit-btn" style="flex: 1; background-color: #95a5a6;">Cancel</button>
+            </div>
+        </form>
+    </section>
 </main>
 
 <footer>
     <p>&copy; 2026 Peterson C. Pepito. All rights reserved.</p>
 </footer>
-
+<script src="cordova.js"></script>
 <script src="js/index.js"></script>
 </body>
 </html>

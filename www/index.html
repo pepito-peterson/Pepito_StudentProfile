@@ -28,21 +28,63 @@
 </header>
 
 <main>
-    <section>
-        <h3>Welcome to My Profile</h3>
-        <p>
-            Hi! I am an undergraduate student currently enrolled in the College of Computer Studies at Xavier University - Ateneo de Cagayan, specializing in Information Technology.
-        </p>
-        <p>
-            I am passionate about networking and doing a bit of DBMS. Navigate the menu above to explore my academic background, technical expertise, and projects.
-        </p>
+    <!--displays my profile-->
+    <section id="profile-display">
+        <h3>Student Profile</h3>
+        <div style="margin-bottom: 1.5rem;">
+            <p style="margin-bottom: 0.5rem;"><strong>Full Name:</strong> <span id="display-name">Loading...</span></p>
+            <p style="margin-bottom: 0.5rem;"><strong>Course:</strong> <span id="display-course">Loading...</span></p>
+            <p style="margin-bottom: 0.5rem;"><strong>Year Level:</strong> <span id="display-year">Loading...</span></p>
+            <p style="margin-bottom: 0.5rem;"><strong>About Me:</strong> <br><span id="display-about">Loading...</span></p>
+            <p style="margin-bottom: 0.5rem;"><strong>Skills:</strong> <span id="display-skills">Loading...</span></p>
+        </div>
+        <button id="edit-btn" class="submit-btn">Edit Profile</button>
+    </section>
+
+    <!--profile edit section/hidden-->
+    <section id="profile-edit" class="hidden">
+        <h3>Edit Profile</h3>
+        <div id="error-message" style="color: #e74c3c; font-weight: bold; margin-bottom: 1rem; display: none;"></div>
+
+        <form id="edit-form" class="contact-form">
+            <div class="form-group">
+                <label for="edit-name">Full Name</label>
+                <input type="text" id="edit-name" placeholder="e.g., Peterson Pepito">
+                <small class="form-hint">Must include both a first and last name.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="edit-course">Course</label>
+                <input type="text" id="edit-course" placeholder="Enter your course/program">
+            </div>
+
+            <div class="form-group">
+                <label for="edit-year">Year Level</label>
+                <input type="text" id="edit-year" placeholder="Enter your year level (e.g., 3rd Year)">
+            </div>
+
+            <div class="form-group">
+                <label for="edit-about">About Me</label>
+                <textarea id="edit-about" rows="4" placeholder="Brief description about yourself..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="edit-skills">Skills</label>
+                <input type="text" id="edit-skills" placeholder="e.g., HTML, CSS, JavaScript, MySQL">
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                <button type="button" id="save-btn" class="submit-btn" style="flex: 1;">Save</button>
+                <button type="button" id="cancel-btn" class="submit-btn" style="flex: 1; background-color: #95a5a6;">Cancel</button>
+            </div>
+        </form>
     </section>
 </main>
 
 <footer>
     <p>&copy; 2026 Peterson C. Pepito. All rights reserved.</p>
 </footer>
-
+<script src="cordova.js"></script>
 <script src="js/index.js"></script>
 </body>
 </html>
