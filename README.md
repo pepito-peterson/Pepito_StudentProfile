@@ -1,7 +1,7 @@
 **Name: Peterson C. Pepito**
 
 
-# Activity 5 - Interactive Student Profile Application
+# Activity 6 - Camera Integration 
 
 ## 1. Project Description
 The Student Profile application is a multipage, responsive mobile application built with Apache Cordova. It showcases my personal info, academic projects, skills, and contact information. 
@@ -19,53 +19,87 @@ The application features interactive editing on both the Profile and Contact pag
 * **Contact Editing:** Users can modify their School Email, Personal Email, GitHub Link, and Location.
   When the "Edit" button is clicked, the static text is seamlessly replaced by a form interface pre-filled with the current data.
 
-## 4. JavaScript Functionality
- utilized JS strictly for DOM manipulation, form handling, and data persistence, without relying on dynamically generating new HTML pages:
-* **Form Handling:** Event listeners toggle a `.hidden` CSS class to smoothly swap between the "Display View" and the "Edit View".
-* **Validation:** Before saving, the script ensures no fields are left blank. It also enforces strict rules: the Full Name field requires both a first and last name (checking word count), and the Contact email fields utilize Regular Expressions (Regex) to ensure valid email formatting. Invalid inputs trigger a red border and a specific error message.
-* **Profile Updates:** Upon passing validation, the DOM's `textContent` is instantly updated with the new values, including a global update to the Header Name across all pages.
-* **Save / Cancel:** The 'Save' button commits changes to storage and updates the UI. The 'Cancel' button discards any typed changes and safely reverts to the Display View.
+## 4. Camera Integration
+The application utilizes the `cordova-plugin-camera` to interact with the device's camera hardware.
+* **The Process:**
+  1. **Change Profile Picture:** The user taps on their existing profile picture in the header.
+  2. **Open Camera:** The application triggers the Cordova plugin to launch the device's native camera interface.
+  3. **Capture Image:** The user takes a photo and confirms the capture using the on-screen checkmark.
+  4. **Update Profile Picture:** The application receives the image data and instantly updates the DOM to display the newly captured photo in the header.
 
-## 5. Local Data Storage
-To ensure data persists even after the app is fully closed and reopened, the application utilizes the browser's `localStorage` API.
-* When changes are saved, `localStorage.setItem()` stores the strings.
-* Upon application boot, the script uses `localStorage.getItem()` to populate the interface.
-* If the app is launched for the very first time (and `localStorage` is empty), the script gracefully falls back to a hardcoded `defaultProfile` and `defaultContact` object.
+## 5. Device Feature Integration
+Standard mobile web browsers run in a sandbox and have restricted access to native hardware. **Apache Cordova** is used as a bridge to solve this problem. By wrapping the HTML/JS web application in a native Android container, Cordova's plugins allow the JavaScript code to directly communicate with the Android operating system, enabling features like native camera access and system-level permission requests.
 
-## 6. Responsive Design
-The application employs a Mobile-First design strategy using CSS Flexbox, Grid, and `@media` queries:
-* **Mobile (Default):** Elements stack vertically. A specific landscape orientation query (`max-height: 600px`) shrinks the header and aligns elements horizontally to maximize vertical reading space on rotated phones.
-* **Tablet:** Expands to a two-column grid (`min-width: 768px`) for content cards and expands padding.
-* **Desktop:** Transitions to a three-column grid (`min-width: 1024px`), and the navigation header reorganizes into a horizontal top bar to prevent stretching.
+## 6. Image Handling
+To maintain strict memory optimization and prevent storage limits from being exceeded, the captured image is not converted into a massive Base64 text string.
+* **Persistence:** The camera saves the photo as a temporary file on the device and returns a direct `FILE_URI` (file path). This lightweight path is then saved to `localStorage`.
+* **Display:** The application's Content Security Policy (CSP) and `config.xml` file are explicitly configured to trust local `file://` URIs, allowing the app to render the saved photo directly from the device's storage upon restart. A "Revert to Old Profile Picture" button is included to clear this storage and restore the default asset if needed.
 
-## 7. How to Run
-1. Clone or download the repository to your local machine.
-2. Open your terminal and navigate to the root directory of the project.
-3. Run `cordova prepare android` to sync the HTML, CSS, and JS files from the `www/` folder to the Android platform directory.
-4. Open the project in Android Studio and launch your Android Virtual Device (AVD).
-5. Run `cordova emulate android` in the terminal (or press the Play button in Android Studio) to build the APK and deploy the application.
+## 7. Error Handling
+The application is designed to handle camera and hardware exceptions gracefully without crashing:
+* **Camera Permission Denial:** If the user denies the native Android camera permission prompt, the application catches the rejection and displays an alert box instructing the user to enable permissions in their device settings.
+* **Camera Cancellation:** If the user opens the camera but presses the "back" button without taking a photo, the app silently catches the "no image selected" event and keeps the existing profile picture intact.
+* **Camera Errors:** If the hardware fails to initialize or encounters a system error, a generic alert box displays the exact error message provided by the Android OS for easy troubleshooting.
 
-## 8. Application Screenshots
+## 8. Responsive Design
+The user interface is built to be fully responsive. By utilizing CSS Flexbox, CSS Grid, and scalable viewport meta tags, the application layout seamlessly adapts its structure, font sizes, and image dimensions to provide an optimal viewing experience across **Desktop**, **Tablet**, and **Mobile** screen sizes.
 
-### Student Profile (Display View)
-<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/b45af131-4cd3-453f-9959-da265bf313b4" />
+## 9. How to Run
 
-<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/67ebee81-d044-430e-9bb5-1b124eea8434" />
+**1. Install Dependencies**
+Ensure you have Node.js and the Android SDK installed, then install Cordova globally:
+npm install -g cordova
 
-### Edit Profile (Form View)
-<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/b7c1ca8c-4783-4fbb-921a-4ff993aa1159" />
+**2. Configure the Cordova project**
+cordova platform add android
 
-<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/5e380502-9e4b-4a65-b4e7-ef617b0e194f" />
+**(NOTE FOR CONFIG: Ensure the preference <preference name="AndroidInsecureFileModeEnabled" value="true" /> is present in your config.xml 
+to allow the Android WebView to render the local image file paths.)**
 
-### Updated Profile (After Saving)
-<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/3d0bcc83-8c84-4fa9-a6eb-50bf11d4be5c" />
+**3. Install/configure the camera plugin**
+cordova plugin add cordova-plugin-camera
+cordova plugin add cordova-plugin-android-permissions
 
-### Contact Page (With Editable Info)
-<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/78e1aa25-0f2c-4b52-bb0e-5c5e41321402" />
+**4. Build the application**
+cordova build android
 
-<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/607b9fc4-044f-414f-9951-0cfbdd487d62" />
+**5. Run the application**
+cordova emulate android
 
-<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/b5ff54fe-d8a5-47af-bdde-ed651c783d63" />
+**(NOTE WHEN RUNNING THE APP IF IT BUGS OUT AGAIN: Deployment Troubleshooting: If the automatic deployment fails due to local environment pathing issues 
+(such as spaces in Windows user directories), use the Android Debug Bridge (ADB) to force the installation manually)**\
 
-<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/6222e7a6-a25d-401f-a82c-190b0221b563" />
+Run this command: adb install -r platforms/android/app/build/outputs/apk/debug/app-debug.apk
 
+
+### Student Profile 
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/beab88d9-4948-4d5a-8124-56faae94de4e" />
+
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/6a23ef5a-a666-4409-909a-e3ca989bda14" />
+
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/50c7e7cf-5563-4a53-b31b-54247d0cd2a4" />
+(I also added a feature where u revert to the default pic by clicking a revert btn)
+
+### Change Profile Picture
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/26c7e6a2-9a4d-48c7-a3d9-419f5fa436c4" />
+
+### Camera
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/835b9f55-2d94-41bf-bb31-7fe833ee56df" />
+
+### Captured Image
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/83f56f09-2016-402f-9173-439aab594980" />
+(different photo taken from one of my tests where after clicking the cam button three different buttons appeared. On the left side it reverts to the camera again if you've taken a photo, 
+secondly the check mark is for confirmation of your photo taken, and lastly the x mark closes the camera.)
+
+### Updated Profile Picture
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/cacd78b8-aad8-4af8-b514-716ad92619e4" />
+
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/9de2e376-480b-4d90-b386-b553ae99f820" />
+
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/1e161599-421f-41b8-acbe-ba16f8f1e257" />
+
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/25af4d3b-5a28-44f7-b2e7-beddc0bb7089" />
+
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/f4c52191-fb66-450e-aa55-0cdf6061c593" />
+
+(the old pf used stays on too if u open the camera and close the application)

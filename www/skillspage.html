@@ -2,15 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+
+    <!-- Updated CSP: Added 'file:' to img-src -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content: file: *;">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>Skills - Peterson C. Pepito</title>
+    <title>Profile - Peterson C. Pepito</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
 <header>
     <div class="header-container">
-        <img src="PetersonPepito.jpg" alt="Profile Picture of Peterson C. Pepito" class="profile-pic">
+        <img id="profile-pic" src="img/PetersonPepito.jpg" alt="Profile Picture of Peterson C. Pepito" class="profile-pic" style="cursor: pointer;" title="Tap to change profile picture">
         <div class="header-text">
             <h1>Peterson C. Pepito</h1>
             <h2>Information Technology Student</h2>

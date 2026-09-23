@@ -2,6 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+
+    <!-- Updated CSP: Added 'file:' to img-src -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content: file: *;">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>Profile - Peterson C. Pepito</title>
     <link rel="stylesheet" href="css/style.css">
@@ -10,7 +14,7 @@
 
 <header>
     <div class="header-container">
-        <img src="PetersonPepito.jpg" alt="Profile Picture of Peterson C. Pepito" class="profile-pic">
+        <img id="profile-pic" src="img/PetersonPepito.jpg" alt="Profile Picture of Peterson C. Pepito" class="profile-pic" style="cursor: pointer;" title="Tap to change profile picture">
         <div class="header-text">
             <h1>Peterson C. Pepito</h1>
             <h2>Information Technology Student</h2>
@@ -44,8 +48,8 @@
     <!--profile edit section/hidden-->
     <section id="profile-edit" class="hidden">
         <h3>Edit Profile</h3>
+        <button type="button" id="reset-pic-btn" class="submit-btn" style="background-color: #e74c3c; margin-bottom: 1rem;">Revert to Old Profile Picture</button>
         <div id="error-message" style="color: #e74c3c; font-weight: bold; margin-bottom: 1rem; display: none;"></div>
-
         <form id="edit-form" class="contact-form">
             <div class="form-group">
                 <label for="edit-name">Full Name</label>
