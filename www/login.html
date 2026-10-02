@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Update YOUR_IPV4 below -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' 'unsafe-eval'; connect-src 'self' http://192.168.100.4:3000;">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Login</title>
+</head>
+<body>
+<div class="container" style="margin-top: 50px;">
+    <form id="login-form" class="card">
+        <h2>Student Portal</h2>
+        <div id="status-msg" style="color: blue; margin-bottom: 10px;">Checking network...</div>
+
+        <!-- Added Label for Student ID -->
+        <label for="identifier" style="display:block; margin-bottom:5px; font-weight:bold;">Student ID</label>
+        <input type="text" id="identifier" required placeholder="Enter Student ID" style="display:block; width:100%; margin-bottom:15px; padding:10px;">
+
+        <!-- Added Label for Password -->
+        <label for="password" style="display:block; margin-bottom:5px; font-weight:bold;">Password</label>
+        <input type="password" id="password" required placeholder="Enter Password" style="display:block; width:100%; margin-bottom:15px; padding:10px;">
+
+        <button type="submit" class="submit-btn" style="width:100%;">Login</button>
+    </form>
+</div>
+<script src="js/login.js"></script>
+</body>
+</html>

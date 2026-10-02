@@ -1,52 +1,89 @@
-/**
-    Licensed to the Apache Software Foundation (ASF) under one
-    or more contributor license agreements.  See the NOTICE file
-    distributed with this work for additional information
-    regarding copyright ownership.  The ASF licenses this file
-    to you under the Apache License, Version 2.0 (the
-    "License"); you may not use this file except in compliance
-    with the License.  You may obtain a copy of the License at
+// ==========================================
+// 1. AUTHENTICATION GUARD (Runs Immediately)
+// ==========================================
+const token = localStorage.getItem('studentToken');
+if (!token) {
+    window.location.replace('login.html');
+}
 
-        http://www.apache.org/licenses/LICENSE-2.0
+// Your Backend Node.js Server IP
+const API_URL = 'http://192.168.100.4:3000/api';
 
-    Unless required by applicable law or agreed to in writing,
-    software distributed under the License is distributed on an
-    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-    KIND, either express or implied.  See the License for the
-    specific language governing permissions and limitations
-    under the License.
-/* --- Initialize Cordova --- */
+
+// ==========================================
+// 2. CORDOVA DEVICE READY
+// ==========================================
+document.addEventListener('deviceready', onDeviceReady, false);
+
 document.addEventListener('deviceready', onDeviceReady, false);
 
 function onDeviceReady() {
     console.log('Running cordova-' + cordova.platformId + '@' + cordova.version);
-    // ACTIVITY 6: Load the saved profile picture when the device is ready
-    loadProfilePicture();
+    loadProfilePicture(); // ACTIVITY 6: Load picture when device is ready
 }
 
-/* --- Activity 5 & 6: Profile, Contact & Camera Logic --- */
-document.addEventListener('DOMContentLoaded', () => {
+// ==========================================
+// 3. MAIN UI & DATA LOADING (Activities 5, 6, 7)
+// ==========================================
+document.addEventListener('DOMContentLoaded', async () => {
 
-    // ACTIVITY 6: Load picture immediately when DOM loads (handles all 5 pages)
-    loadProfilePicture();
 
-    // ACTIVITY 6: Attach the camera click event safely using JavaScript
+// --- ACTIVITY 6: Image Initializations ---
+loadProfilePicture();
+
     const profileImageBtn = document.getElementById('profile-pic');
-    if (profileImageBtn) {
-        profileImageBtn.addEventListener('click', openCamera);
-    }
-    // NEW: Attach the Reset Picture event
-        const resetPicBtn = document.getElementById('reset-pic-btn');
-        if (resetPicBtn) {
-            resetPicBtn.addEventListener('click', () => {
-                // 1. Delete the saved camera photo from storage
-                localStorage.removeItem('savedProfilePicture');
-                // 2. Reload the profile picture (this will now fallback to your default image)
-                loadProfilePicture();
+    if (profileImageBtn) profileImageBtn.addEventListener('click', openCamera);
+
+    const resetPicBtn = document.getElementById('reset-pic-btn');
+    if (resetPicBtn) {
+        resetPicBtn.addEventListener('click', async () => {
+            localStorage.removeItem('savedProfilePicture');
+            loadProfilePicture();
+            if (await saveProfilePicture(null)) {
                 alert("Profile picture reverted to default!");
-            });
+            }
+        });
+    }
+
+    // --- LOGOUT BUTTON EVENT ---
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('studentToken');
+            localStorage.removeItem('savedProfilePicture');
+            window.location.replace('login.html');
+        });
+    }
+
+    // --- ACTIVITY 7: Fetch Live Database Profile (Read) ---
+    try {
+        const res = await fetch(`${API_URL}/profile`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (res.ok) {
+            const dbData = await res.json();
+            // Update local storage with fresh DB data
+            localStorage.setItem('profileName', dbData.full_name);
+            localStorage.setItem('profileCourse', dbData.course);
+            localStorage.setItem('profileYear', dbData.year_level);
+            localStorage.setItem('contactSchool', dbData.email);
+            if (dbData.about_me) localStorage.setItem('profileAbout', dbData.about_me);
+            if (dbData.skills) localStorage.setItem('profileSkills', dbData.skills);
+            if (dbData.profile_picture) {
+                localStorage.setItem('savedProfilePicture', dbData.profile_picture);
+            } else {
+                localStorage.removeItem('savedProfilePicture');
+            }
+            loadProfilePicture();
+        } else if (res.status === 401 || res.status === 403) {
+            logoutUser(); // Fallback if token expires
         }
-    // 1. Default Profile Data
+    } catch (err) {
+        console.error("Backend offline. Using cached local storage data.", err);
+    }
+
+    // --- ACTIVITY 5: UI Rendering (Using DB data or Local Fallbacks) ---
     const defaultProfile = {
         name: "Peterson C. Pepito",
         course: "BS Information Technology",
@@ -55,7 +92,6 @@ document.addEventListener('DOMContentLoaded', () => {
         skills: "Java, Python, Web Development, MySQL, Git/GitHub"
     };
 
-    // 2. Fetch current profile from localStorage
     const profile = {
         name: localStorage.getItem('profileName') || defaultProfile.name,
         course: localStorage.getItem('profileCourse') || defaultProfile.course,
@@ -64,32 +100,25 @@ document.addEventListener('DOMContentLoaded', () => {
         skills: localStorage.getItem('profileSkills') || defaultProfile.skills
     };
 
-    // 3. GLOBAL UPDATE: Update the header name on ALL pages
+    // Update the header name on ALL pages
     const headerName = document.querySelector('.header-text h1');
-    if (headerName) {
-        headerName.textContent = profile.name;
-    }
+    if (headerName) headerName.textContent = profile.name;
 
-    // ==========================================
-    // 4. HOMEPAGE SPECIFIC UPDATE
-    // ==========================================
+    // --- HOMEPAGE LOGIC ---
     const displaySection = document.getElementById('profile-display');
     if (displaySection) {
-        // Populate display fields
         document.getElementById('display-name').textContent = profile.name;
         document.getElementById('display-course').textContent = profile.course;
         document.getElementById('display-year').textContent = profile.year;
         document.getElementById('display-about').textContent = profile.about;
         document.getElementById('display-skills').textContent = profile.skills;
 
-        // Form Elements
         const editSection = document.getElementById('profile-edit');
         const errorMsg = document.getElementById('error-message');
         const editBtn = document.getElementById('edit-btn');
         const saveBtn = document.getElementById('save-btn');
         const cancelBtn = document.getElementById('cancel-btn');
 
-        // Event: Click "Edit Profile"
         editBtn.addEventListener('click', () => {
             document.getElementById('edit-name').value = document.getElementById('display-name').textContent;
             document.getElementById('edit-course').value = document.getElementById('display-course').textContent;
@@ -103,14 +132,13 @@ document.addEventListener('DOMContentLoaded', () => {
             editSection.classList.remove('hidden');
         });
 
-        // Event: Click "Cancel"
         cancelBtn.addEventListener('click', () => {
             editSection.classList.add('hidden');
             displaySection.classList.remove('hidden');
         });
 
-        // Event: Click "Save"
-        saveBtn.addEventListener('click', () => {
+        // ACTIVITY 7: Save to Database (Update)
+        saveBtn.addEventListener('click', async () => {
             const nameInput = document.getElementById('edit-name');
             nameInput.classList.remove('input-error');
             errorMsg.style.display = 'none';
@@ -121,14 +149,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const newAbout = document.getElementById('edit-about').value.trim();
             const newSkills = document.getElementById('edit-skills').value.trim();
 
-            // Validation: Prevent empty fields
             if (!newName || !newCourse || !newYear || !newAbout) {
                 errorMsg.textContent = "Please complete all required fields.";
                 errorMsg.style.display = 'block';
                 return;
             }
 
-            // Validation: Require First and Last Name
             const nameWords = newName.split(/\s+/);
             if (nameWords.length < 2) {
                 errorMsg.textContent = "Please enter both a first and last name.";
@@ -137,33 +163,58 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Save to localStorage
-            localStorage.setItem('profileName', newName);
-            localStorage.setItem('profileCourse', newCourse);
-            localStorage.setItem('profileYear', newYear);
-            localStorage.setItem('profileAbout', newAbout);
-            localStorage.setItem('profileSkills', newSkills);
+            // ACTIVITY 7: Database Update Fetch
+            try {
+                const response = await fetch(`${API_URL}/profile`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        name: newName,
+                        course: newCourse,
+                        year: newYear,
+                        about: newAbout,
+                        skills: newSkills
+                    })
+                });
 
-            // Update UI instantly
-            document.getElementById('display-name').textContent = newName;
-            document.getElementById('display-course').textContent = newCourse;
-            document.getElementById('display-year').textContent = newYear;
-            document.getElementById('display-about').textContent = newAbout;
-            document.getElementById('display-skills').textContent = newSkills;
-            headerName.textContent = newName;
+                if (response.ok) {
+                    alert("Profile updated successfully.");
 
-            editSection.classList.add('hidden');
-            displaySection.classList.remove('hidden');
+                    localStorage.setItem('profileName', newName);
+                    localStorage.setItem('profileCourse', newCourse);
+                    localStorage.setItem('profileYear', newYear);
+                    localStorage.setItem('profileAbout', newAbout);
+                    localStorage.setItem('profileSkills', newSkills);
+
+                    document.getElementById('display-name').textContent = newName;
+                    document.getElementById('display-course').textContent = newCourse;
+                    document.getElementById('display-year').textContent = newYear;
+                    document.getElementById('display-about').textContent = newAbout;
+                    document.getElementById('display-skills').textContent = newSkills;
+                    if (headerName) headerName.textContent = newName;
+
+                    editSection.classList.add('hidden');
+                    displaySection.classList.remove('hidden');
+                } else if (response.status === 401 || response.status === 403) {
+                    alert("Your session has expired. Please log in again.");
+                    logoutUser();
+                } else {
+                    const data = await response.json().catch(() => ({}));
+                    alert(data.error || "Unable to update your profile.");
+                }
+            } catch (err) {
+                console.error("Profile update failed:", err);
+                alert("Unable to update your profile. Please try again.");
+            }
         });
     }
 
-    // ==========================================
-    // 5. CONTACT PAGE SPECIFIC UPDATE
-    // ==========================================
+    // --- CONTACT PAGE LOGIC ---
     const contactDisplaySection = document.getElementById('contact-display');
     if (contactDisplaySection) {
-
-        // Default Contact Data
         const defaultContact = {
             schoolEmail: "20190018209@my.xu.edu.ph",
             personalEmail: "ersonpeito53@gmail.com",
@@ -171,7 +222,6 @@ document.addEventListener('DOMContentLoaded', () => {
             location: "El Salvador City, Misamis Oriental, 9017"
         };
 
-        // Fetch current contact info from localStorage
         const contactInfo = {
             schoolEmail: localStorage.getItem('contactSchool') || defaultContact.schoolEmail,
             personalEmail: localStorage.getItem('contactPersonal') || defaultContact.personalEmail,
@@ -179,7 +229,6 @@ document.addEventListener('DOMContentLoaded', () => {
             location: localStorage.getItem('contactLocation') || defaultContact.location
         };
 
-        // Populate display fields
         document.getElementById('display-school-email').textContent = contactInfo.schoolEmail;
         document.getElementById('display-personal-email').textContent = contactInfo.personalEmail;
         document.getElementById('display-github').textContent = contactInfo.github;
@@ -190,14 +239,12 @@ document.addEventListener('DOMContentLoaded', () => {
             githubLink.href = contactInfo.github.startsWith('http') ? contactInfo.github : 'https://' + contactInfo.github;
         }
 
-        // Form Elements
         const contactEditSection = document.getElementById('contact-edit');
         const contactErrorMsg = document.getElementById('contact-error-message');
         const editContactBtn = document.getElementById('edit-contact-btn');
         const saveContactBtn = document.getElementById('save-contact-btn');
         const cancelContactBtn = document.getElementById('cancel-contact-btn');
 
-        // Event: Click "Edit Contact Info"
         editContactBtn.addEventListener('click', () => {
             document.getElementById('edit-school-email').value = document.getElementById('display-school-email').textContent;
             document.getElementById('edit-personal-email').value = document.getElementById('display-personal-email').textContent;
@@ -209,18 +256,15 @@ document.addEventListener('DOMContentLoaded', () => {
             contactEditSection.classList.remove('hidden');
         });
 
-        // Event: Click "Cancel"
         cancelContactBtn.addEventListener('click', () => {
             contactEditSection.classList.add('hidden');
             contactDisplaySection.classList.remove('hidden');
         });
 
-        // Event: Click "Save"
         saveContactBtn.addEventListener('click', () => {
             const schoolInput = document.getElementById('edit-school-email');
             const personalInput = document.getElementById('edit-personal-email');
 
-            // Reset errors
             schoolInput.classList.remove('input-error');
             personalInput.classList.remove('input-error');
             contactErrorMsg.style.display = 'none';
@@ -230,23 +274,19 @@ document.addEventListener('DOMContentLoaded', () => {
             const newGithub = document.getElementById('edit-github').value.trim();
             const newLocation = document.getElementById('edit-location').value.trim();
 
-            // Validation: Prevent Empty Fields
             if (!newSchool || !newPersonal || !newGithub || !newLocation) {
                 contactErrorMsg.textContent = "Please complete all required fields.";
                 contactErrorMsg.style.display = 'block';
                 return;
             }
 
-            // Validation: Strict Email Format (Regex)
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
             if (!emailRegex.test(newSchool)) {
                 contactErrorMsg.textContent = "Please enter a valid school email address.";
                 contactErrorMsg.style.display = 'block';
                 schoolInput.classList.add('input-error');
                 return;
             }
-
             if (!emailRegex.test(newPersonal)) {
                 contactErrorMsg.textContent = "Please enter a valid personal email address.";
                 contactErrorMsg.style.display = 'block';
@@ -254,13 +294,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Save to localStorage
             localStorage.setItem('contactSchool', newSchool);
             localStorage.setItem('contactPersonal', newPersonal);
             localStorage.setItem('contactGithub', newGithub);
             localStorage.setItem('contactLocation', newLocation);
 
-            // Update UI instantly
             document.getElementById('display-school-email').textContent = newSchool;
             document.getElementById('display-personal-email').textContent = newPersonal;
             document.getElementById('display-github').textContent = newGithub;
@@ -276,32 +314,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// ==========================================
-// 6. ACTIVITY 6: CAMERA & PERMISSIONS FUNCTIONS
-// ==========================================
 
+// ==========================================
+// 4. GLOBAL FUNCTIONS (Camera & Fallback Auth)
+// ==========================================
 function openCamera() {
     if (!navigator.camera) {
         alert("Camera plugin not found. Ensure you are running this on an emulator or physical device.");
         return;
     }
 
-    // Explicitly check for Camera Permissions before opening the hardware
     if (cordova.plugins && cordova.plugins.permissions) {
         const permissions = cordova.plugins.permissions;
-
         permissions.checkPermission(permissions.CAMERA, function(status) {
             if (status.hasPermission) {
-                // Permission already granted, launch camera immediately
                 launchCamera();
             } else {
-                // Permission not granted, explicitly request it from the user
                 permissions.requestPermission(permissions.CAMERA, function(status) {
                     if (status.hasPermission) {
-                        launchCamera(); // User tapped "Allow"
+                        launchCamera();
                     } else {
-                        // User tapped "Deny"
-                        alert("Camera access was denied. Please enable camera permissions in your device settings to change your profile picture.");
+                        alert("Camera access was denied. Please enable camera permissions in your device settings.");
                     }
                 }, function() {
                     alert("Camera permission request failed.");
@@ -309,51 +342,71 @@ function openCamera() {
             }
         });
     } else {
-        // Fallback: If the permissions plugin isn't installed, let the camera plugin attempt to handle it natively
         launchCamera();
     }
 }
-
-// Separated the actual camera launch into its own function to run after permissions are granted
 function launchCamera() {
     let options = {
-        quality: 50, // We can raise this back up safely now
-        destinationType: Camera.DestinationType.FILE_URI, // FIX: Use file path instead of text
+        quality: 50,
+        // CHANGED: Use DATA_URL to bypass Android file security blocks
+        destinationType: Camera.DestinationType.DATA_URL,
         sourceType: Camera.PictureSourceType.CAMERA,
         allowEdit: false,
         encodingType: Camera.EncodingType.JPEG,
         saveToPhotoAlbum: false
     };
-
     navigator.camera.getPicture(onCameraSuccess, onCameraFail, options);
 }
 
-function onCameraSuccess(imageURI) {
+function onCameraSuccess(imageData) {
     let imageElement = document.getElementById('profile-pic');
 
-    // Display the newly captured image using the direct file path
-    if (imageElement) {
-        imageElement.src = imageURI;
-    }
+    // CHANGED: Format the raw data into a Base64 image URL
+    let base64Image = "data:image/jpeg;base64," + imageData;
 
-    // Save the tiny file path to localStorage instead of a massive block of text
-    localStorage.setItem('savedProfilePicture', imageURI);
+    if (imageElement) imageElement.src = base64Image;
+
+    // Save the Base64 string to local storage and the database
+    localStorage.setItem('savedProfilePicture', base64Image);
+    saveProfilePicture(base64Image);
+}
+
+// ACTIVITY 7: Save (or clear, when null) the profile picture in the database
+async function saveProfilePicture(base64Image) {
+    try {
+        const response = await fetch(`${API_URL}/profile/picture`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ profile_picture: base64Image })
+        });
+
+        if (response.ok) return true;
+        if (response.status === 401 || response.status === 403) {
+            alert("Your session has expired. Please log in again.");
+            logoutUser();
+            return false;
+        }
+        const data = await response.json().catch(() => ({}));
+        alert(data.error || "Unable to save your profile picture.");
+    } catch (err) {
+        console.error("Profile picture upload failed:", err);
+        alert("Unable to save your profile picture. Please try again.");
+    }
+    return false;
 }
 
 function onCameraFail(message) {
-    // Handle cancellation gracefully without throwing an error
     if (message.toLowerCase().includes("no image selected") || message.toLowerCase().includes("cancelled")) {
-        console.log("Camera cancelled by user. Existing picture remains.");
+        console.log("Camera cancelled by user.");
         return;
     }
-
-    // Catch automatic permission denials triggered directly by the camera plugin
     if (message.toLowerCase().includes("permission")) {
         alert("Camera access was denied. Please check your device permissions.");
         return;
     }
-
-    // Handle actual hardware/software errors
     alert("Unable to access the camera: " + message);
 }
 
@@ -363,11 +416,15 @@ function loadProfilePicture() {
 
     if (imageElement) {
         if (storedImage) {
-            // If a camera photo exists in storage, display it
             imageElement.src = storedImage;
         } else {
-            // If no photo exists, force the default image path
             imageElement.src = "img/PetersonPepito.jpg";
         }
     }
+}
+
+function logoutUser() {
+    localStorage.removeItem('studentToken');
+    localStorage.removeItem('savedProfilePicture');
+    window.location.replace('login.html');
 }
