@@ -1,9 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!-- Add the xmlns:android attribute here on line 2 -->
-<widget id="com.example.hello" version="1.0.0"
-    xmlns="http://www.w3.org/ns/widgets"
-    xmlns:cdv="http://cordova.apache.org/ns/1.0"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<widget id="com.your.app" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <access origin="*" />
 
     <name>Test</name>
     <description>
@@ -19,12 +18,20 @@
 
     <!-- The Android platform block MUST go inside the widget tag -->
     <platform name="android">
-        <!-- Add this line to fix the Android file block -->
-        <preference name="AndroidInsecureFileModeEnabled" value="true" />
+        <!-- Keep our HTTP bypass for the app -->
+        <preference name="scheme" value="http" />
+        <preference name="hostname" value="localhost" />
+
+        <!-- FORCE Android OS to allow HTTP -->
+        <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application">
+            <application android:usesCleartextTraffic="true" />
+        </edit-config>
+
+        <allow-navigation href="http://192.168.100.4/*" />
+        <access origin="*" />
 
         <config-file target="AndroidManifest.xml" parent="/*">
             <uses-permission android:name="android.permission.CAMERA" />
         </config-file>
     </platform>
-
 </widget>

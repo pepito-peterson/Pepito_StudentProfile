@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
 
     <!-- Updated CSP: Added 'file:' to img-src -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content: file: *;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; connect-src 'self' http://192.168.100.4:3000; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content: file: *;">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>Profile - Peterson C. Pepito</title>
@@ -43,6 +43,8 @@
             <p style="margin-bottom: 0.5rem;"><strong>Skills:</strong> <span id="display-skills">Loading...</span></p>
         </div>
         <button id="edit-btn" class="submit-btn">Edit Profile</button>
+        <!--logout btn-->
+        <button id="logout-btn" class="submit-btn" style="background-color: #e74c3c;">Logout</button>
     </section>
 
     <!--profile edit section/hidden-->
